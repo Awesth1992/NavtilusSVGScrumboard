@@ -3,33 +3,33 @@
 
 // Webservice Info Start
 // Options: LIVE, LIVESNAP, TEST, TESTSNAP
-const CurrentSetup = 'TEST'
+const CurrentSetup = 'TESTSNAP'
 
 //Setup
 switch (CurrentSetup) {
   case 'LIVE':
-    const scrumboardURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/Scrumboard'
-    const scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
-    const SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
-    const WebserviceFunction = 'JobTasks';
+    var scrumboardURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/Scrumboard'
+    var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
+    var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+    var WebserviceFunction = 'JobTasks';
     break;
   case 'LIVESNAP':
-    const scrumboardURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
-    const scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
-    const SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
-    const WebserviceFunction = 'JobTasksFromSnapshot';
+    var scrumboardURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
+    var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
+    var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+    var WebserviceFunction = 'JobTasksFromSnapshot';
     break;
   case 'TEST':
-    const scrumboardURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
-    const scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
-    const SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
-    const WebserviceFunction = 'JobTasks';
+    var scrumboardURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
+    var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
+    var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+    var WebserviceFunction = 'JobTasks';
     break;
   case 'TESTSNAP':
-    const scrumboardURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
-    const scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
-    const SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
-    const WebserviceFunction = 'JobTasksFromSnapshot';
+    var scrumboardURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
+    var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
+    var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+    var WebserviceFunction = 'JobTasksFromSnapshot';
     break;
 }
 // Webservice Info End
