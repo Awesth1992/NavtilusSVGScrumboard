@@ -1,0 +1,55 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+* {
+	margin: 0px;
+	padding: 0px;
+	font-family: "Montserrat", Calibri, 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+	text-rendering: optimizeLegibility;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	background-color: #F2F3F4;
+}
+
+.HeaderText {
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.75em;
+}
+
+.JobID {
+	font-size: 1.5em;
+	font-weight: 600;
+	line-height: 1em;
+}
+
+.Name {
+	font-size: 1.5em;
+	font-weight: 600;
+	line-height: 1em;
+}
+
+.ShortText {
+	font-size: 1.5em;
+}
+
+.Description {
+	font-size: 0.5em;
+}
+
+.IDText {
+	text-align: center;
+	font-weight: 800;
+	font-size: 1.75em;
+}
+
+.BufferText {
+	text-align: center;
+	font-size: 1.25em;
+}
+
+.DetailText {
+	font-size: 0.75em;
+	text-align: center;
+}

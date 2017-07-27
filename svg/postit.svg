@@ -1,0 +1,18 @@
+<g id="PostIT" onclick="parent.enlargePostIt(this)">
+	<rect x="0" y="0" width="300" height="200" fill="yellow" stroke-width="2" stroke="#000" id="Background" />
+	<foreignObject x="10" y="10" width="290" height="25" id="ID" overflow="hidden" class="JobID">
+		<div alignt="center">
+			<p></p>
+		</div>
+	</foreignObject>
+	<foreignObject x="10" y="40" width="290" height="25" id="Name" overflow="hidden" class="Name">
+		<div alignt="center">
+			<p></p>
+		</div>
+	</foreignObject>
+	<foreignObject x="10" y="80" width="290" height="120" id="ShortText" overflow="hidden" class="ShortText">
+		<div align="left">
+			<p></p>
+		</div>
+	</foreignObject>
+</g>

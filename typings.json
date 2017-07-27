@@ -1,0 +1,7 @@
+{
+  "globalDependencies": {
+    "jquery": "registry:dt/jquery#1.10.0+20170310222111",
+    "snapsvg": "registry:dt/snapsvg#0.4.1+20160510002910",
+    "svg.js": "registry:dt/svg.js#0.0.0+20160510002910"
+  }
+}

@@ -1,0 +1,24 @@
+<g id="LargePostIT" onclick="this.remove()" class="LargePostIt">
+	<rect x="0" y="0" width="300" height="200" fill="yellow" stroke-width="2" stroke="#000" id="Background" />
+	<foreignObject x="10" y="10" width="115" height="20" id="ID" overflow="hidden" class="JobID">
+		<div alignt="center">
+			<p></p>
+		</div>
+	</foreignObject>
+	<foreignObject x="135" y="10" width="165" height="20" id="Name" overflow="hidden" class="Name">
+		<div alignt="center">
+			<p></p>
+		</div>
+	</foreignObject>
+	<foreignObject x="10" y="50" width="290" height="25" id="Text" overflow="hidden" class="ShortText">
+		<div align="left">
+			<p></p>
+		</div>
+	</foreignObject>
+	</foreignObject>
+	<foreignObject x="10" y="90" width="290" height="110" id="Text" overflow="hidden" class="Description">
+		<div align="left">
+			<p></p>
+		</div>
+	</foreignObject>
+</g>

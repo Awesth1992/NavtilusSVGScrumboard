@@ -1,0 +1,17 @@
+<g id="Resource" width="100" height="80">
+    <foreignObject id="IDText" width="100" height="40" class="IDText">
+        <div>
+            <p></p>
+        </div>
+    </foreignObject>
+    <foreignObject y="40" width="100" height="25" class="BufferText">
+        <div>
+            <p></p>
+        </div>
+    </foreignObject>
+    <foreignObject y="65" width="100" height="15" class="DetailText">
+        <div>
+            <p></p>
+        </div>
+    </foreignObject>
+</g>

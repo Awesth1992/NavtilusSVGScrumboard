@@ -1,0 +1,28 @@
+* {}
+
+body {}
+
+.HeaderText {
+	font-weight: 1600;
+	font-size: 1em;
+}
+
+.JobID {
+	font-weight: 700;
+}
+
+.Name {
+	font-weight: 700;
+}
+
+.ShortText {}
+
+.Description {}
+
+.IDText {
+	font-size: 1.75em;
+}
+
+.BufferText {}
+
+.DetailText {}
