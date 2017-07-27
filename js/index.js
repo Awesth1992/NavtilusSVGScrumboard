@@ -3,25 +3,29 @@
 
 // Webservice Info Start
 // LIVE 
-//var baseURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS';
-//var scrumboardURL = baseURL + '/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/Scrumboard'
-//var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
-//var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+// const baseURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS';
+// const scrumboardURL = baseURL + '/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/Scrumboard'
+// const scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
+// const SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+// const WebserviceFunction = 'JobTasks';
 // LIVE SNAP TEST
-// var baseURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS';
-// var scrumboardURL = baseURL + '/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
-// var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
-// var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+// const baseURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS';
+// const scrumboardURL = baseURL + '/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
+// const scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
+// const SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+// const WebserviceFunction = 'JobTasksFromSnapshot';
 // TEST
-var baseURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS';
-var scrumboardURL = baseURL + '/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
-var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
-var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+const baseURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS';
+const scrumboardURL = baseURL + '/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
+const scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
+const SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+const WebserviceFunction = 'JobTasks';
 // TEST SNAP
-// var baseURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS';
-// var scrumboardURL = baseURL + '/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
-// var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
-// var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+// const baseURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS';
+// const scrumboardURL = baseURL + '/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
+// const scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
+// const SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
+// const WebserviceFunction = 'JobTasksFromSnapshot';
 // Webservice Info End
 
 var carddata;
@@ -31,14 +35,9 @@ var setupEvent = new Event('SetupData');
 
 InvokeNavWS(scrumboardURL, 'Headers', scrumboardNS, 'return_value', '', setSetupJSON);
 
-// LIVE
 function getPostItData() {
-  InvokeNavWS(scrumboardURL, 'JobTasks', scrumboardNS, 'return_value', '', setCardData);
+  InvokeNavWS(scrumboardURL, WebserviceFunction, scrumboardNS, 'return_value', '', setCardData);
 }
-// TEST
-//function getPostItData() {
-// InvokeNavWS(scrumboardURL, 'JobTasksFromSnapshot', scrumboardNS, 'return_value', '', setCardData);
-//}
 
 var draw = Snap('#svgDiv');
 var g = draw.group();
