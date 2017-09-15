@@ -8,29 +8,28 @@ const CurrentSetup = 'TESTSNAP'
 //Setup
 switch (CurrentSetup) {
   case 'LIVE':
-    var scrumboardURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/Scrumboard'
+    var scrumboardURL = 'http://nav2017srv.navtilus.dk:10000/NAVWS/Navtilus2017NTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/Scrumboard'
     var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
     var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
     var WebserviceFunction = 'JobTasks';
     break;
   case 'LIVESNAP':
-    var scrumboardURL = 'http://nav2015srv.navtilus.dk:10000/NAVWS/Navtilus2015WSNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
+    var scrumboardURL = 'http://nav2017srv.navtilus.dk:10000/NAVWS/Navtilus2017NTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
     var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
     var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
     var WebserviceFunction = 'JobTasksFromSnapshot';
     break;
   case 'TEST':
-    var scrumboardURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
+    var scrumboardURL = 'http://nav2017srv.navtilus.dk:10001/NAVWS/Navtilus2017UDVNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/Scrumboard'
     var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
     var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
     var WebserviceFunction = 'JobTasks';
     break;
   case 'TESTSNAP':
-    var scrumboardURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
-    var scrumboardURL = 'http://NAV2017SRV.navtilus.dk:10000/NAVWS/Navtilus2017TestNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
+    var scrumboardURL = 'http://NAV2017SRV.navtilus.dk:10000/NAVWS/Navtilus2017UDVNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
     var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
     var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
-    var WebserviceFunction = 'JobTasks';
+    var WebserviceFunction = 'JobTasksFromSnapshot';
     break;
 }
 // Webservice Info End
@@ -229,6 +228,8 @@ function drawPostIts() {
       tempCard.select("#Name").node.textContent = obj.Name;
       tempCard.select("#ShortText").node.textContent = obj.Title;
       tempCard.select("#Background").node.setAttribute("fill", obj.Color);
+      tempCard.select("#Background").node.setAttribute("priority", obj.Priority);
+      tempCard.select("#Background").node.setAttribute("unplanned", obj.Unplanned);
       cardgroup.append(tempCard.clone());
     });
   });
@@ -264,6 +265,8 @@ function enlargePostIt(parameter) {
     tempPostIt.transform(getTransformationString(widthPctToPix(25), heightPctToPix(25), getLargePostItScaling()));
     tempPostIt.select('.Description').node.textContent = jobTask.Desc;
     tempPostIt.select("#Background").node.setAttribute("fill", jobTask.Color);
+    tempPostIt.select("#Background").node.setAttribute("priority", jobTask.Priority);
+    tempPostIt.select("#Background").node.setAttribute("unplanned", jobTask.Unplanned);
     tempPostIt.node.setAttribute("onclick", "this.remove()");
     cardgroup.append(tempPostIt.clone());
   });
