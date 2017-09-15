@@ -27,9 +27,10 @@ switch (CurrentSetup) {
     break;
   case 'TESTSNAP':
     var scrumboardURL = 'http://nav2015srv.navtilus.dk:10001/NAVWS/NavtilusUDV2015WSNTLM/WS/TEST%20Navtilus%20Software%20PS/Codeunit/Scrumboard'
+    var scrumboardURL = 'http://NAV2017SRV.navtilus.dk:10000/NAVWS/Navtilus2017TestNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
     var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
     var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
-    var WebserviceFunction = 'JobTasksFromSnapshot';
+    var WebserviceFunction = 'JobTasks';
     break;
 }
 // Webservice Info End
@@ -220,7 +221,7 @@ function drawPostIts() {
     carddata.Tasks.forEach(function (obj) {
       var tempCard = postIt;
       // Find placement
-      var xPos = findPostITXPos(Number(Number(obj.Status) +1), Number(obj.Index), Number(obj.Count));
+      var xPos = findPostITXPos(Number(obj.Status), Number(obj.Index), Number(obj.Count));
       var yPos = heightPctToPix(getPostItYPctPosition(findWithAttr(setupJSON.Resources, "Name", obj.Resource)));
       //Transform PostIT
       tempCard.transform(getTransformationString(xPos, yPos, globalPostITScaling));
@@ -467,6 +468,7 @@ function InvokeNavWS(URL, method, nameSpace, returnTag, parameters, callback) {
         if (xmlhttp.status == 200) {
           xmldoc = xmlhttp.responseXML;
           result = xmldoc.documentElement.textContent;
+          console.log(result);
           callback(result);
           //xmldoc.setProperty('SelectionLanguage', 'XPath');
           //xmldoc.setProperty('SelectionNamespaces', 'xmlns:tns="' + nameSpace + '"');
