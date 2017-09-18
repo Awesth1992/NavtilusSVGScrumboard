@@ -17,7 +17,7 @@ switch (CurrentSetup) {
     var scrumboardURL = 'http://nav2017srv.navtilus.dk:10000/NAVWS/Navtilus2017NTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
     var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
     var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
-    var WebserviceFunction = 'JobTasksFromSnapshot';
+    var WebserviceFunction = 'JobTasks';
     break;
   case 'TEST':
     var scrumboardURL = 'http://nav2017srv.navtilus.dk:10001/NAVWS/Navtilus2017UDVNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/Scrumboard'
@@ -26,18 +26,27 @@ switch (CurrentSetup) {
     var WebserviceFunction = 'JobTasks';
     break;
   case 'TESTSNAP':
-    var scrumboardURL = 'http://NAV2017SRV.navtilus.dk:10000/NAVWS/Navtilus2017UDVNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
+    var scrumboardURL = 'http://NAV2017SRV.navtilus.dk:10001/NAVWS/Navtilus2017UDVNTLM/WS/Navtilus%20Software%20P%2FS/Codeunit/ScrumboardSnap'
     var scrumboardNS = 'http://schemas.xmlsoap.org/soap/envelope/';
     var SoapEnvelopeNS = "http://schemas.xmlsoap.org/soap/envelope/";
-    var WebserviceFunction = 'JobTasksFromSnapshot';
+    var WebserviceFunction = 'JobTasks';
     break;
 }
+
 // Webservice Info End
 
 var carddata;
 var setupJSON;
 var postItEvent = new Event('PostItData');
 var setupEvent = new Event('SetupData');
+var CSS = document.documentElement.style;
+
+// Toggle statuses
+var normalToggled = false;
+var unplannedToggled = false;
+var highToggled = false;
+var highUnplannedToggled = false;
+
 
 InvokeNavWS(scrumboardURL, 'Headers', scrumboardNS, 'return_value', '', setSetupJSON);
 
@@ -63,10 +72,10 @@ function drawHeaders() {
       var yPos = getCenterYPos(0, heightPctToPix(5));
       // Attempt to offset y pos to center text
       tempHeader.transform(getTransformationString(widthPctToPix(obj.Position), yPos, ));
-      tempHeader.node.setAttribute("height", String(heightPctToPix(5/2)));
+      tempHeader.node.setAttribute("height", String(heightPctToPix(5 / 2)));
       tempHeader.node.setAttribute("width", String(widthPctToPix(Number(obj.Width))));
       tempHeader.select("#HeaderText").node.textContent = obj.Description;
-      tempHeader.select("#HeaderText").node.setAttribute("height", String(heightPctToPix(5/2)));
+      tempHeader.select("#HeaderText").node.setAttribute("height", String(heightPctToPix(5 / 2)));
       tempHeader.select("#HeaderText").node.setAttribute("width", String(widthPctToPix((Number(obj.Width)))));
       tempHeader.select("#HeaderText").node.setAttribute("vertical-align", "middle");
       g.append(tempHeader.clone())
@@ -88,7 +97,7 @@ function drawResources() {
       var yPosTop = heightPctToPix(getResourceYPctPosition(Number(obj.ID)));
       var yPosBottom = heightPctToPix(getResourceYPctPosition(Number(obj.ID) + 1));
       //var yPosCenter = getCenterYPos(yPosTop, yPosBottom);
-      var xPos = getResourceXPosition(findWithAttr(setupJSON.Headers,"Description","ID"));
+      var xPos = getResourceXPosition(findWithAttr(setupJSON.Headers, "Description", "ID"));
       tempResource.transform(getTransformationString(xPos, yPosTop, ));
       tempResource.node.setAttribute("width", String(widthPctToPix(Number(setupJSON.Headers[0].Width))));
       var height = offsetHeight(yPosBottom - yPosTop);
@@ -109,25 +118,21 @@ function drawResources() {
 
       var lineX = 0;
       var lineX2 = widthPctToPix(100);
-      if (JSON.parse(setupJSON.Headers[0].Controlbar))
-        {
-          lineX = widthPctToPix(setupJSON.Headers[0].Width);
-        }
-      else if (JSON.parse(setupJSON.Headers[setupJSON.Headers.length - 1].Width))
-        {
-          lineX2 = widthPctToPix(100 - setupJSON.Headers[setupJSON.Headers.length - 1].Width);
-        }
+      if (JSON.parse(setupJSON.Headers[0].Controlbar)) {
+        lineX = widthPctToPix(setupJSON.Headers[0].Width);
+      } else if (JSON.parse(setupJSON.Headers[setupJSON.Headers.length - 1].Width)) {
+        lineX2 = widthPctToPix(100 - setupJSON.Headers[setupJSON.Headers.length - 1].Width);
+      }
 
-      if (!horizontalHeaderLineDrawn)
-        {
-          var line = draw.line(lineX, heightPctToPix(5), lineX2, heightPctToPix(5));
-          line.attr({
-            stroke: "#000",
-            strokeWidth: 2
-          });
-          g.append(line);
-          horizontalHeaderLineDrawn = true;
-        }
+      if (!horizontalHeaderLineDrawn) {
+        var line = draw.line(lineX, heightPctToPix(5), lineX2, heightPctToPix(5));
+        line.attr({
+          stroke: "#000",
+          strokeWidth: 2
+        });
+        g.append(line);
+        horizontalHeaderLineDrawn = true;
+      }
       var line = draw.line(lineX, yPosBottom, lineX2, yPosBottom);
       line.attr({
         stroke: "#000",
@@ -139,66 +144,64 @@ function drawResources() {
 }
 
 function drawRefreshButton() {
-  var svgDiv = Snap.load("svg/RefreshButton.svg",function (loadedFragment){
+  var svgDiv = Snap.load("svg/RefreshButton.svg", function (loadedFragment) {
     var button = loadedFragment.select(".RefreshButton");
-    var ControlbarIndex = findWithAttr(setupJSON.Headers,"Controlbar","true");
+    var ControlbarIndex = findWithAttr(setupJSON.Headers, "Controlbar", "true");
     var startX = widthPctToPix(setupJSON.Headers[ControlbarIndex].Position) + 2;
     var width = widthPctToPix(setupJSON.Headers[ControlbarIndex].Width) - 4;
     var scale = width / 100;
     var height = 100 * scale;
     var startY = heightPctToPix(100) - height;
-    button.transform(getTransformationString(startX,startY,scale));
+    button.transform(getTransformationString(startX, startY, scale));
     g.append(button);
   });
 }
 
 function drawColorLegend() {
-  var svgDiv = Snap.load("svg/ColorLegend.svg", function (loadedFragment){
+  var svgDiv = Snap.load("svg/ColorLegend.svg", function (loadedFragment) {
     var legend = loadedFragment.select(".ColorLegend");
-    var ControlbarIndex = findWithAttr(setupJSON.Headers,"Controlbar","true");
+    var ControlbarIndex = findWithAttr(setupJSON.Headers, "Controlbar", "true");
     var startX = widthPctToPix(setupJSON.Headers[ControlbarIndex].Position) + 2;
     var width = widthPctToPix(setupJSON.Headers[ControlbarIndex].Width) - 4;
     var scale = width / 100;
     var offset = (400 * scale) + 10;
     var startY = 5;
-    legend.node.setAttribute("style","p{transform: -webkit-transform: rotate(90deg);}")
+    legend.node.setAttribute("style", "p{transform: -webkit-transform: rotate(90deg);}")
 
-    var index = findWithAttrPair(carddata.Tasks,"Priority","0","Unplanned","0");
-    if (index != -1)
-      {
-        legend.select(".Color").node.setAttribute("fill",carddata.Tasks[index].Color);
-        legend.select(".LegendDescription").node.textContent = "Normal";
-        legend.transform(getTransformationString(startX, startY, scale));
-        g.append(legend.clone());
-        startY = startY + offset;
-      }
-    var index = findWithAttrPair(carddata.Tasks,"Priority","1","Unplanned","0");
-    if (index != -1)
-      {
-        legend.select(".Color").node.setAttribute("fill",carddata.Tasks[index].Color);
-        legend.select(".LegendDescription").node.textContent = "Høj";
-        legend.transform(getTransformationString(startX, startY, scale));
-        g.append(legend.clone());
-        startY = startY + offset;
-      }
-    var index = findWithAttrPair(carddata.Tasks,"Priority","0","Unplanned","1");
-    if (index != -1)
-      {
-        legend.select(".Color").node.setAttribute("fill",carddata.Tasks[index].Color);
-        legend.select(".LegendDescription").node.textContent = "Uplanlagt";
-        legend.transform(getTransformationString(startX, startY, scale));
-        g.append(legend.clone());
-        startY = startY + offset;
-      }
-    var index = findWithAttrPair(carddata.Tasks,"Priority","1","Unplanned","1");
-    if (index != -1)
-      {
-        legend.select(".Color").node.setAttribute("fill",carddata.Tasks[index].Color);
-        legend.select(".LegendDescription").node.textContent = "Uplanlagt Høj";
-        legend.transform(getTransformationString(startX, startY, scale));
-        g.append(legend.clone());
-        startY = startY + offset;
-      }
+    // Find the different priorities and "Unplanned"
+
+    //legend.select(".Color").node.setAttribute("fill",carddata.Tasks[index].Color);
+    legend.select(".Color").node.setAttribute("priority", "0");
+    legend.select(".Color").node.setAttribute("unplanned", "0");
+    legend.select(".LegendDescription").node.textContent = "Normal";
+    legend.transform(getTransformationString(startX, startY, scale));
+    g.append(legend.clone());
+    startY = startY + offset;
+
+    //legend.select(".Color").node.setAttribute("fill",carddata.Tasks[index].Color);
+    legend.select(".Color").node.setAttribute("priority", "1");
+    legend.select(".Color").node.setAttribute("unplanned", "0");
+    legend.select(".LegendDescription").node.textContent = "Høj";
+    legend.transform(getTransformationString(startX, startY, scale));
+    g.append(legend.clone());
+    startY = startY + offset;
+
+    //legend.select(".Color").node.setAttribute("fill",carddata.Tasks[index].Color);
+    legend.select(".Color").node.setAttribute("priority", "0");
+    legend.select(".Color").node.setAttribute("unplanned", "1");
+    legend.select(".LegendDescription").node.textContent = "Uplanlagt";
+    legend.transform(getTransformationString(startX, startY, scale));
+    g.append(legend.clone());
+    startY = startY + offset;
+
+    //legend.select(".Color").node.setAttribute("fill",carddata.Tasks[index].Color);
+    legend.select(".Color").node.setAttribute("priority", "1");
+    legend.select(".Color").node.setAttribute("unplanned", "1");
+    legend.select(".LegendDescription").node.textContent = "Uplanlagt Høj";
+    legend.transform(getTransformationString(startX, startY, scale));
+    g.append(legend.clone());
+    startY = startY + offset;
+
   });
 }
 
@@ -251,11 +254,11 @@ function enlargePostIt(parameter) {
     var n = jobIDText.indexOf('/');
     var JobID = jobIDText.substring(0, n != -1 ? n : jobIDText.length);
     var TaskID = jobIDText.substring(n + 1, jobIDText.length)
-    var index = findWithAttrPair(carddata.Tasks,"Job",JobID,"Task",TaskID);
+    var index = findWithAttrPair(carddata.Tasks, "Job", JobID, "Task", TaskID);
     var jobTask = carddata.Tasks[index];
     // Draw the post it
     var tempPostIt = loadedFragment.select('.LargePostIt');
-    tempPostIt.select('.JobID').node.textContent = jobTask.Job + '/' + jobTask.Task ;
+    tempPostIt.select('.JobID').node.textContent = jobTask.Job + '/' + jobTask.Task;
     tempPostIt.select('.JobID').node.setAttribute("style", "font-size: 0.75em");
     tempPostIt.select('.Name').node.textContent = jobTask.Name;
     tempPostIt.select('.Name').node.setAttribute("style", "font-size: 0.75em");
@@ -273,38 +276,38 @@ function enlargePostIt(parameter) {
 }
 
 /**
-  * Offset height of headers, for use in centering.
-  * @param {number} height Height of the header space
-  * @return {number}
-  */
+ * Offset height of headers, for use in centering.
+ * @param {number} height Height of the header space
+ * @return {number}
+ */
 function offsetHeight(height) {
   var offset = parseFloat(getComputedStyle(document.documentElement).fontSize) / 2;
   return height - offset;
 }
 
 /**
-  * Returns PostIT scaling based on the total height of the page
-  * @return {number}
-  */
+ * Returns PostIT scaling based on the total height of the page
+ * @return {number}
+ */
 function calcPostITScaling() {
   return (globalResourceHeight / 200) * 0.7;
 }
 
 /**
-  * Returns PostIt width based on global scale
-  * @return {number} PostIt width in pixels
-  */
+ * Returns PostIt width based on global scale
+ * @return {number} PostIt width in pixels
+ */
 function getPostItWidth() {
   return 300 * globalPostITScaling;
 }
 
 /**
-  * Returns the position on the x axis for a post it.
-  * @param {number} Status The status index on the PostIT
-  * @param {number} PostItIndex The index of the PostIT, within the given status
-  * @param {number} Count The total amount of PostIT's within the given status, for the PostIT's resource.
-  * @return {number}
-  */
+ * Returns the position on the x axis for a post it.
+ * @param {number} Status The status index on the PostIT
+ * @param {number} PostItIndex The index of the PostIT, within the given status
+ * @param {number} Count The total amount of PostIT's within the given status, for the PostIT's resource.
+ * @return {number}
+ */
 function findPostITXPos(Status, PostItIndex, Count) {
   // TODO: Global variable for scaling of post its. Hardcoded for now
   // Using 5 pixels spacing for post its - Do this smarter...
@@ -322,11 +325,11 @@ function findPostITXPos(Status, PostItIndex, Count) {
 }
 
 /**
-  * Returns the index number for the object in the array with an attribute with the passed value.
-  * @param {string} attr The attribute to search for the value in.
-  * @param {string} value The value to search for.
-  * @return {number} The index of the object. -1 = Not found.
-  */
+ * Returns the index number for the object in the array with an attribute with the passed value.
+ * @param {string} attr The attribute to search for the value in.
+ * @param {string} value The value to search for.
+ * @return {number} The index of the object. -1 = Not found.
+ */
 function findWithAttr(array, attr, value) {
   for (var i = 0; i < array.length; i += 1) {
     if (array[i][attr] === value) {
@@ -337,13 +340,13 @@ function findWithAttr(array, attr, value) {
 }
 
 /**
-  * Returns the index number for the object in the array with an attribute pair with the passed values.
-  * @param {string} attr1 The first attribute to search for the value in.
-  * @param {string} value1 The first  value to search for.
-  * @param {string} attr2 The second attribute to search for the value in.
-  * @param {string} value2 The second value to search for.
-  * @return {number} The index of the object. -1 = Not found.
-  */
+ * Returns the index number for the object in the array with an attribute pair with the passed values.
+ * @param {string} attr1 The first attribute to search for the value in.
+ * @param {string} value1 The first  value to search for.
+ * @param {string} attr2 The second attribute to search for the value in.
+ * @param {string} value2 The second value to search for.
+ * @return {number} The index of the object. -1 = Not found.
+ */
 function findWithAttrPair(array, attr1, value1, attr2, value2) {
   for (var i = 0; i < array.length; i += 1) {
     if (String(array[i][attr1]) == String(value1) && String(array[i][attr2]) == String(value2)) {
@@ -354,10 +357,10 @@ function findWithAttrPair(array, attr1, value1, attr2, value2) {
 }
 
 /**
-  * Returns the position in percentage on the y axis for a given resource index relative to coordinate 0,0.
-  * @param {number} index The resource index.
-  * @return {number} Placement on the y axis, in percentages of screen height
-  */
+ * Returns the position in percentage on the y axis for a given resource index relative to coordinate 0,0.
+ * @param {number} index The resource index.
+ * @return {number} Placement on the y axis, in percentages of screen height
+ */
 function getResourceYPctPosition(index) {
   var pos = index;
   var pctPerResource = 95 / setupJSON.Resources.length;
@@ -370,20 +373,20 @@ function getResourceYPctPosition(index) {
 }
 
 /**
-  * Returns the position in pixels on the x axis for a given resource index relative to coordinate 0,0.
-  * @param {number} index The resource index.
-  * @return {number} Number of pixels from coordinate 0,0.
-  */
+ * Returns the position in pixels on the x axis for a given resource index relative to coordinate 0,0.
+ * @param {number} index The resource index.
+ * @return {number} Number of pixels from coordinate 0,0.
+ */
 function getResourceXPosition(index) {
   var pos = widthPctToPix(setupJSON.Headers[index].Position) + 5;
   return pos;
 }
 
 /**
-  * Calculate a PostIT's y position in persentages, based on the PostIT's resource index
-  * @param {number} resourceIndex The Index of the resource the PostIT is attached to
-  * @return {number} The Percentage y position
-  */
+ * Calculate a PostIT's y position in persentages, based on the PostIT's resource index
+ * @param {number} resourceIndex The Index of the resource the PostIT is attached to
+ * @return {number} The Percentage y position
+ */
 function getPostItYPctPosition(resourceIndex) {
   var pos = resourceIndex;
   var pctPerResource = 95 / setupJSON.Resources.length;
@@ -392,9 +395,9 @@ function getPostItYPctPosition(resourceIndex) {
 }
 
 /**
-  * Calculates the required scaling for large PostIT's
-  * @return {number}
-  */  
+ * Calculates the required scaling for large PostIT's
+ * @return {number}
+ */
 function getLargePostItScaling() {
   var onePct = $(window).height() / 100;
   var scaling = (onePct * 50) / 200;
@@ -402,12 +405,12 @@ function getLargePostItScaling() {
 }
 
 /**
-  * Returns an SVG transformation string 
-  * @param {number|string} x The x coordinate for the SVG element
-  * @param {number|string} y The y coordinate for the SVG element
-  * @param {number|string} scale The scaling for the SVG element
-  * @return {string} The finished transformation string
-  */
+ * Returns an SVG transformation string 
+ * @param {number|string} x The x coordinate for the SVG element
+ * @param {number|string} y The y coordinate for the SVG element
+ * @param {number|string} scale The scaling for the SVG element
+ * @return {string} The finished transformation string
+ */
 function getTransformationString(x, y, scale) {
   var result = "translate(" + x + "," + y + ")";
   if (scale != null) {
@@ -417,20 +420,20 @@ function getTransformationString(x, y, scale) {
 }
 
 /**
-  * Converts a percentage based on the windows width, to pixels.
-  * @param {number} pct A percentage to convert to pixels.
-  * @return {number} Number of pixels from coordinate 0,0.
-  */
+ * Converts a percentage based on the windows width, to pixels.
+ * @param {number} pct A percentage to convert to pixels.
+ * @return {number} Number of pixels from coordinate 0,0.
+ */
 function widthPctToPix(pct) {
   var onePct = $(window).width() / 100;
   return Number(pct) * onePct;
 }
 
 /**
-  * Converts a percentage based on the window height, to pixels.
-  * @param {number} pct A percentage to convert to pixels.
-  * @return {number} Number of pixels from coordinate 0,0.
-  */
+ * Converts a percentage based on the window height, to pixels.
+ * @param {number} pct A percentage to convert to pixels.
+ * @return {number} Number of pixels from coordinate 0,0.
+ */
 function heightPctToPix(pct) {
   var onePct = $(window).height() / 100;
   return pct * onePct;
@@ -438,9 +441,9 @@ function heightPctToPix(pct) {
 
 // Function to Invoke a NAV WebService and return data from a specific Tag in the responseXML 
 /**
-  * @param {string} URL URL to call.
-  * @param {string} method The name of the method to call on the webservice.
-  */
+ * @param {string} URL URL to call.
+ * @param {string} method The name of the method to call on the webservice.
+ */
 function InvokeNavWS(URL, method, nameSpace, returnTag, parameters, callback) {
   var result = null;
   try {
@@ -496,3 +499,117 @@ function setSetupJSON(result) {
   window.dispatchEvent(setupEvent);
 }
 
+function toggleColor(parameter){
+  var colorLegend = Snap(parameter);
+  var priority = colorLegend.select('.Color').node.getAttribute("priority");
+  var unplanned = colorLegend.select('.Color').node.getAttribute("unplanned");
+  switch (priority + unplanned)
+  {
+    case "00":
+    case "20":
+    case "30":
+      toggleNormal();
+      break;
+    case "01":
+    case "21":
+    case "31":
+      toggleUnplanned();
+      break;
+    case "10":
+      toggleHigh();
+      break;
+    case "11":
+      toggleHighUnplanned();
+      break;
+  }
+}
+
+// Function to toggle opacity for Post-It's with normal priority
+/**
+ */
+function toggleNormal() {
+  if (normalToggled) {
+    setOpacities(1, null, null, null);
+    normalToggled = false;
+  } else {
+    setOpacities(0.25, null, null, null);
+    normalToggled = true;
+  }
+}
+
+// Function to toggle opacity for unplanned Post-It's with normal priority
+/**
+ */
+function toggleUnplanned() {
+  if (unplannedToggled) {
+    setOpacities(null, 1, null, null);
+    unplannedToggled = false;
+  } else {
+    setOpacities(null, 0.25, null, null);
+    unplannedToggled = true;
+  }
+}
+
+// Function to toggle opacity for Post-It's with high priority
+/**
+ */
+function toggleHigh() {
+  if (highToggled) {
+    setOpacities(null, null, 1, null);
+    highToggled = false;
+  } else {
+    setOpacities(null, null, 0.25, null);
+    highToggled = true;
+  }
+}
+
+// Function to toggle opacity for unplanned Post-It's with high priority
+/**
+ */
+function toggleHighUnplanned() {
+  if (highUnplannedToggled) {
+    setOpacities(null, null, null, 1);
+    highUnplannedToggled = false;
+  } else {
+    setOpacities(null, null, null, 0.25);
+    highUnplannedToggled = true;
+  }
+}
+
+// Function to change opacity for Post-it's.
+/**
+ * @param {(number|null)} normal Opacity of normal priority Post-It's. Values between 0(invisible) and 1(fully visible).
+ * @param {(number|null)} unplanned Opacity of unplanned normal priority Post-It's. Values between 0(invisible) and 1(fully visible).
+ * @param {(number|null)} high Opacity of high priority Post-It's. Values between 0(invisible) and 1(fully visible).
+ * @param {(number|null)} unplannedHigh Opacity of unplanned high priority Post-It's. Values between 0(invisible) and 1(fully visible).
+ */
+function setOpacities(normal, unplanned, high, unplannedHigh) {
+  if (normal != null) {
+    CSS.setProperty('--normalPriorityOpacity', normal);
+  }
+  if (unplanned != null) {
+    CSS.setProperty('--normalPriorityUnplannedOpacity', unplanned);
+  }
+  if (high != null) {
+    CSS.setProperty('--highPriorityOpacity', high);
+  }
+  if (unplannedHigh != null) {
+    CSS.setProperty('--highPriorityUnplannedOpacity', unplannedHigh);
+  }
+}
+
+function setColors(normalColor, unplannedColor, highColor, unplannedHighColor)
+{
+  if (normalColor != null) {
+    CSS.setProperty('--normalPrioritycolor', normalColor);
+  }
+  if (unplannedColor != null) {
+    CSS.setProperty('--normalPriorityUnplannedColor', unplannedColor);
+  }
+  if (highColor != null) {
+    CSS.setProperty('--highPriorityColor', highColor);
+  }
+  if (unplannedHighColor != null) {
+    CSS.setProperty('--highPriorityUnplannedColor', unplannedHighColor);
+  }
+}
