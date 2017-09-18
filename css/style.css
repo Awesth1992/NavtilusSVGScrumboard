@@ -1,4 +1,16 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+:root{
+	--normalPriorityFill: #F9E79F;
+	--highPriorityFill: #ABEBC6;
+	--normalPriorityUnplannedFill:#F1948A;
+	--highPriorityUnplannedFill: #F0B27A;
+	--normalPriorityOpacity: 1;
+	--highPriorityOpacity: 1;
+	--normalPriorityUnplannedOpacity: 1;
+	--highPriorityUnplannedOpacity: 1;
+}
+
 * {
 	margin: 0px;
 	padding: 0px;
@@ -52,4 +64,37 @@ body {
 .DetailText {
 	font-size: 0.75em;
 	text-align: center;
+}
+
+[priority*="0"][unplanned*="0"]  {
+	fill: var(--normalPriorityFill);
+	opacity: var(--normalPriorityOpacity);
+}
+[priority*="2"][unplanned*="0"]  {
+	fill: var(--normalPriorityFill);
+	opacity: var(--normalPriorityOpacity);
+}
+[priority*="3"][unplanned*="0"]  {
+	fill: var(--normalPriorityFill);
+	opacity: var(--normalPriorityOpacity);
+}
+[priority*="1"][unplanned*="0"] {
+	fill: var(--highPriorityFill);
+	opacity: var(--highPriorityOpacity);
+}
+[priority*="0"][unplanned*="1"] {
+	fill: var(--normalPriorityUnplannedFill);
+	opacity: var(--normalPriorityUnplannedOpacity);
+}
+[priority*="2"][unplanned*="1"] {
+	fill: var(--normalPriorityUnplannedFill);
+	opacity: var(--normalPriorityUnplannedOpacity);
+}
+[priority*="3"][unplanned*="1"] {
+	fill: var(--normalPriorityUnplannedFill);
+	opacity: var(--normalPriorityUnplannedOpacity);
+}
+[priority*="1"][unplanned*="1"] {
+	fill: var(--highPriorityUnplannedFill);
+	opacity: var(--highPriorityUnplannedOpacity);
 }

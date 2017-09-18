@@ -1,6 +1,5 @@
-<svg transform="scale(0.3)">
-  <g id="ColorLegend" class="ColorLegend" width="100" height="300" x="0" y="0">
+<g id="ColorLegend" class="ColorLegend" onclick="parent.toggleColor(this)">
     <rect x="0" y="0" width="100" height="400" fill="transparent" stroke-width="2" stroke="#000" />
-    <rect x="5" y="5" width="90" height="57" fill="yellow" stroke-width="2" stroke="#000" class="Color"/>
+    <rect x="5" y="5" width="90" height="57" fill="yellow" stroke-width="2" stroke="#000" class="Color" priority="0" unplanned="0"/>
     <text x="5" y="100" width="90" height="300" class="LegendDescription" overflow="hidden" transform="rotate(90 35 100)" font-size="2.9em"></text>
 <g/>
