@@ -1,10 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
 :root{
-	--normalPriorityFill: #F9E79F;
-	--highPriorityFill: #ABEBC6;
-	--normalPriorityUnplannedFill:#F1948A;
-	--highPriorityUnplannedFill: #F0B27A;
+	--normalPriorityFill: #ffffff;
+	--highPriorityFill: #ffffff;
+	--normalPriorityUnplannedFill:#ffffff;
+	--highPriorityUnplannedFill: #ffffff;
 	--normalPriorityOpacity: 1;
 	--highPriorityOpacity: 1;
 	--normalPriorityUnplannedOpacity: 1;
