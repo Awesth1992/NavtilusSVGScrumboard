@@ -3,7 +3,7 @@
 
 // Webservice Info Start
 // Options: LIVE, LIVESNAP, TEST, TESTSNAP
-const CurrentSetup = 'TESTSNAP'
+var CurrentSetup = 'TESTSNAP';
 
 //Setup
 switch (CurrentSetup) {
@@ -39,14 +39,13 @@ var carddata;
 var setupJSON;
 var postItEvent = new Event('PostItData');
 var setupEvent = new Event('SetupData');
-var CSS = document.documentElement.style;
+var CSSStyle = document.documentElement.style;
 
 // Toggle statuses
 var normalToggled = false;
 var unplannedToggled = false;
 var highToggled = false;
 var highUnplannedToggled = false;
-
 
 InvokeNavWS(scrumboardURL, 'Headers', scrumboardNS, 'return_value', '', setSetupJSON);
 
@@ -105,10 +104,21 @@ function drawResources() {
       tempResource.select(".IDText").node.textContent = obj.Name;
       tempResource.select(".IDText").node.setAttribute("width", String(widthPctToPix(Number(setupJSON.Headers[0].Width))));
       tempResource.select(".IDText").node.setAttribute("height", String(offsetHeight(yPosBottom - yPosTop)));
+      if (Number(obj.CapacityToday) == 0){
+        tempResource.select(".IDText").node.setAttribute("color","blue");
+      } else {
+        tempResource.select(".IDText").node.setAttribute("color","black");
+      }
 
       if (obj.Name.length > 0) {
         tempResource.select(".BufferText").node.textContent = obj.Buffer;
         tempResource.select(".BufferText").node.setAttribute("width", String(widthPctToPix(Number(setupJSON.Headers[0].Width))));
+        if (Number(obj.Buffer) <= 0){
+          tempResource.select(".BufferText").node.setAttribute("color","red");
+        } else {
+          tempResource.select(".BufferText").node.setAttribute("color","black");
+        }
+  
         //tempResource.select(".BufferText").node.setAttribute("height", String(offsetHeight(yPosBottom - yPosTop)));
         tempResource.select(".DetailText").node.textContent = obj.RemainingEstimate + "/" + obj.Capacity;
         tempResource.select(".DetailText").node.setAttribute("width", String(widthPctToPix(Number(setupJSON.Headers[0].Width))));
@@ -141,6 +151,10 @@ function drawResources() {
       g.append(line);
     })
   });
+}
+
+function assignColors () {
+  setColors(setupJSON.Colors[0].Normal, setupJSON.Colors[0].Unplanned, setupJSON.Colors[0].High, setupJSON.Colors[0].HighUnplanned);
 }
 
 function drawRefreshButton() {
@@ -208,6 +222,7 @@ function drawColorLegend() {
 window.addEventListener('PostItData', function (e) {
   drawPostIts();
   drawColorLegend();
+  assignColors();
 }, false);
 
 window.addEventListener('SetupData', function (e) {
@@ -439,8 +454,8 @@ function heightPctToPix(pct) {
   return pct * onePct;
 }
 
-// Function to Invoke a NAV WebService and return data from a specific Tag in the responseXML 
 /**
+ * Invoke a NAV WebService and return data from a specific Tag in the responseXML 
  * @param {string} URL URL to call.
  * @param {string} method The name of the method to call on the webservice.
  */
@@ -499,6 +514,11 @@ function setSetupJSON(result) {
   window.dispatchEvent(setupEvent);
 }
 
+/**
+ * Edit Post-It opacity 
+ * @param {Element} parameter An element of svg Colorlegend. 
+ * Uses the attributes "priority" and "unplanned" to determine what color Post-IT's to highlight.
+ */
 function toggleColor(parameter){
   var colorLegend = Snap(parameter);
   var priority = colorLegend.select('.Color').node.getAttribute("priority");
@@ -524,8 +544,8 @@ function toggleColor(parameter){
   }
 }
 
-// Function to toggle opacity for Post-It's with normal priority
 /**
+ * Toggle opacity for Post-It's with normal priority
  */
 function toggleNormal() {
   if (normalToggled) {
@@ -537,8 +557,9 @@ function toggleNormal() {
   }
 }
 
-// Function to toggle opacity for unplanned Post-It's with normal priority
+
 /**
+ * Toggle opacity for unplanned Post-It's with normal priority
  */
 function toggleUnplanned() {
   if (unplannedToggled) {
@@ -550,8 +571,8 @@ function toggleUnplanned() {
   }
 }
 
-// Function to toggle opacity for Post-It's with high priority
 /**
+ * Toggle opacity for Post-It's with high priority
  */
 function toggleHigh() {
   if (highToggled) {
@@ -563,8 +584,8 @@ function toggleHigh() {
   }
 }
 
-// Function to toggle opacity for unplanned Post-It's with high priority
 /**
+ * Toggle opacity for unplanned Post-It's with high priority
  */
 function toggleHighUnplanned() {
   if (highUnplannedToggled) {
@@ -576,8 +597,8 @@ function toggleHighUnplanned() {
   }
 }
 
-// Function to change opacity for Post-it's.
 /**
+ * Change opacity for Post-it's.
  * @param {(number|null)} normal Opacity of normal priority Post-It's. Values between 0(invisible) and 1(fully visible).
  * @param {(number|null)} unplanned Opacity of unplanned normal priority Post-It's. Values between 0(invisible) and 1(fully visible).
  * @param {(number|null)} high Opacity of high priority Post-It's. Values between 0(invisible) and 1(fully visible).
@@ -585,31 +606,38 @@ function toggleHighUnplanned() {
  */
 function setOpacities(normal, unplanned, high, unplannedHigh) {
   if (normal != null) {
-    CSS.setProperty('--normalPriorityOpacity', normal);
+    CSSStyle.setProperty('--normalPriorityOpacity', normal);
   }
   if (unplanned != null) {
-    CSS.setProperty('--normalPriorityUnplannedOpacity', unplanned);
+    CSSStyle.setProperty('--normalPriorityUnplannedOpacity', unplanned);
   }
   if (high != null) {
-    CSS.setProperty('--highPriorityOpacity', high);
+    CSSStyle.setProperty('--highPriorityOpacity', high);
   }
   if (unplannedHigh != null) {
-    CSS.setProperty('--highPriorityUnplannedOpacity', unplannedHigh);
+    CSSStyle.setProperty('--highPriorityUnplannedOpacity', unplannedHigh);
   }
 }
 
+/**
+ * Set the CSSStyle colors for Post-It priorities, either by keyword or Color codes
+ * @param {string} normalColor Color for normal priority Post-It's.
+ * @param {string} unplannedColor  Color for unplanned normal priority Post-It's.
+ * @param {string} highColor  Color for high priority Post-It's.
+ * @param {string} unplannedHighColor  Color for unplanned high priority Post-It's.
+ */
 function setColors(normalColor, unplannedColor, highColor, unplannedHighColor)
 {
   if (normalColor != null) {
-    CSS.setProperty('--normalPrioritycolor', normalColor);
+    CSSStyle.setProperty('--normalPriorityFill', normalColor);
   }
   if (unplannedColor != null) {
-    CSS.setProperty('--normalPriorityUnplannedColor', unplannedColor);
+    CSSStyle.setProperty('--normalPriorityUnplannedFill', unplannedColor);
   }
   if (highColor != null) {
-    CSS.setProperty('--highPriorityColor', highColor);
+    CSSStyle.setProperty('--highPriorityFill', highColor);
   }
   if (unplannedHighColor != null) {
-    CSS.setProperty('--highPriorityUnplannedColor', unplannedHighColor);
+    CSSStyle.setProperty('--highPriorityUnplannedFill', unplannedHighColor);
   }
 }
